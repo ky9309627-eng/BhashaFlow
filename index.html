@@ -1,0 +1,300 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101d30">
+<title>BhashaFlow - Translator</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#101d30;
+ color:white;
+ font-family:Arial,sans-serif;
+ min-height:100vh;
+ padding:22px 16px;
+}
+header{
+ display:flex;justify-content:space-between;
+ align-items:center;margin-bottom:25px
+}
+h1{font-size:27px;margin:0}
+.tagline{color:#a8bcd2;font-size:12px;margin-top:7px}
+.card{
+ background:white;color:#172b43;
+ border-radius:17px;padding:18px;
+ margin:14px 0;
+}
+.languages{
+ display:flex;align-items:center;gap:10px;
+ justify-content:space-between
+}
+select{
+ width:100%;padding:12px 7px;
+ border:0;border-radius:10px;
+ background:#233b56;color:white;
+ font-size:14px;outline:none
+}
+.lang{flex:1;min-width:0}
+.lang small{display:block;color:#a8bcd2;margin-bottom:8px}
+.swap{
+ border:0;background:transparent;
+ color:#70bcff;font-size:25px;padding:5px
+}
+.section-title{
+ font-size:15px;font-weight:bold;
+ display:flex;justify-content:space-between;
+ align-items:center;margin-bottom:15px
+}
+textarea{
+ width:100%;height:145px;resize:vertical;
+ border:0;outline:none;
+ font:17px Arial;color:#172b43;
+ background:transparent;line-height:1.6
+}
+.tools{
+ display:flex;justify-content:space-between;
+ align-items:center;margin-top:10px
+}
+button{cursor:pointer}
+.tool{
+ border:0;background:transparent;
+ color:#2563eb;font-size:21px;
+ padding:8px
+}
+.output{
+ background:#e5f2ff;
+ color:#173b62;min-height:175px
+}
+.output-text{
+ font-size:19px;line-height:1.6;
+ min-height:85px;overflow-wrap:anywhere
+}
+.status{font-size:12px;color:#64748b}
+.arrow{text-align:center;color:#70bcff;font-size:25px}
+.bottom{
+ display:flex;justify-content:space-around;
+ margin-top:28px;color:#a8bcd2;font-size:13px
+}
+.bottom button{
+ background:none;border:0;color:#a8bcd2
+}
+#message{font-size:12px;color:#a8bcd2;text-align:center}
+@media(min-width:600px){
+ body{max-width:550px;margin:auto;padding-top:35px}
+}
+</style>
+</head>
+<body>
+
+<header>
+ <div>
+  <h1>BhashaFlow</h1>
+  <div class="tagline">Your world, without language barriers.</div>
+ </div>
+ <span style="font-size:25px">⚙️</span>
+</header>
+
+<div class="languages">
+ <div class="lang">
+  <small>FROM</small>
+  <select id="from">
+   <option value="hi">Hindi</option>
+   <option value="en">English</option>
+   <option value="bn">Bengali</option>
+   <option value="mr">Marathi</option>
+   <option value="ta">Tamil</option>
+   <option value="te">Telugu</option>
+   <option value="gu">Gujarati</option>
+   <option value="pa">Punjabi</option>
+   <option value="ur">Urdu</option>
+   <option value="fr">French</option>
+   <option value="es">Spanish</option>
+   <option value="de">German</option>
+   <option value="ar">Arabic</option>
+   <option value="ja">Japanese</option>
+   <option value="zh-CN">Chinese</option>
+  </select>
+ </div>
+ <button class="swap" id="swap">⇄</button>
+ <div class="lang">
+  <small>TO</small>
+  <select id="to">
+   <option value="en">English</option>
+   <option value="hi">Hindi</option>
+   <option value="bn">Bengali</option>
+   <option value="mr">Marathi</option>
+   <option value="ta">Tamil</option>
+   <option value="te">Telugu</option>
+   <option value="gu">Gujarati</option>
+   <option value="pa">Punjabi</option>
+   <option value="ur">Urdu</option>
+   <option value="fr">French</option>
+   <option value="es">Spanish</option>
+   <option value="de">German</option>
+   <option value="ar">Arabic</option>
+   <option value="ja">Japanese</option>
+   <option value="zh-CN">Chinese</option>
+  </select>
+ </div>
+</div>
+
+<div class="card">
+ <div class="section-title">
+  <span>Original text</span>
+  <span>✏️</span>
+ </div>
+ <textarea id="input" placeholder="Type something here..."></textarea>
+ <div class="tools">
+  <div>
+   <button class="tool" id="mic" title="Speak">🎙️</button>
+   <button class="tool" id="clear" title="Clear">⌫</button>
+  </div>
+  <span class="status">Enter your text</span>
+ </div>
+</div>
+
+<div class="arrow">↓</div>
+<div style="text-align:center;font-size:10px;color:#a8bcd2;letter-spacing:2px">
+ INSTANT TRANSLATION
+</div>
+
+<div class="card output">
+ <div class="section-title">
+  <span>Translated text</span>
+  <span id="badge" class="status">Waiting</span>
+ </div>
+ <div id="result" class="output-text">Your translation will appear here...</div>
+ <div class="tools">
+  <div>
+   <button class="tool" id="speak">🔊</button>
+   <button class="tool" id="copy">▢</button>
+   <button class="tool" id="share">↗</button>
+  </div>
+  <span class="status">Copy / Share</span>
+ </div>
+</div>
+
+<div id="message"></div>
+
+<div class="bottom">
+ <button onclick="alert('History feature coming soon!')">History</button>
+ <button onclick="alert('Favorites feature coming soon!')">Favorites</button>
+ <button onclick="alert('Settings coming soon!')">Settings</button>
+</div>
+
+<script>
+const input=document.getElementById("input");
+const result=document.getElementById("result");
+const from=document.getElementById("from");
+const to=document.getElementById("to");
+const badge=document.getElementById("badge");
+const message=document.getElementById("message");
+
+let timer;
+let controller;
+
+async function translate(){
+ const text=input.value.trim();
+ if(!text){
+  result.textContent="Your translation will appear here...";
+  badge.textContent="Waiting";
+  return;
+ }
+ if(from.value===to.value){
+  result.textContent=text;
+  badge.textContent="Same language";
+  return;
+ }
+ if(controller) controller.abort();
+ controller=new AbortController();
+ const currentText=text;
+ badge.textContent="Translating...";
+ try{
+  const params=new URLSearchParams({
+   q:currentText,
+   langpair:from.value+"|"+to.value
+  });
+  const response=await fetch(
+   "https://api.mymemory.translated.net/get?"+params,
+   {signal:controller.signal}
+  );
+  if(!response.ok) throw new Error("Network error");
+  const data=await response.json();
+  if(input.value.trim()!==currentText) return;
+  if(data.responseStatus!==200) throw new Error("Translation unavailable");
+  result.textContent=data.responseData.translatedText;
+  badge.textContent="Translated";
+ }catch(error){
+  if(error.name==="AbortError") return;
+  result.textContent="Translation unavailable. Please try again.";
+  badge.textContent="Error";
+ }
+}
+
+input.addEventListener("input",()=>{
+ clearTimeout(timer);
+ timer=setTimeout(translate,500);
+});
+from.addEventListener("change",translate);
+to.addEventListener("change",translate);
+
+document.getElementById("swap").onclick=()=>{
+ const old=from.value;
+ from.value=to.value;
+ to.value=old;
+ translate();
+};
+
+document.getElementById("clear").onclick=()=>{
+ input.value="";
+ result.textContent="Your translation will appear here...";
+ badge.textContent="Waiting";
+};
+
+document.getElementById("copy").onclick=async()=>{
+ try{
+  await navigator.clipboard.writeText(result.textContent);
+  message.textContent="Translation copied!";
+ }catch(e){message.textContent="Copy not available";}
+};
+
+document.getElementById("share").onclick=async()=>{
+ if(navigator.share){
+  try{await navigator.share({text:result.textContent});}
+  catch(e){}
+ }else{
+  message.textContent="Sharing is not supported on this browser.";
+ }
+};
+
+document.getElementById("speak").onclick=()=>{
+ if(!result.textContent || !("speechSynthesis" in window)) return;
+ speechSynthesis.cancel();
+ const speech=new SpeechSynthesisUtterance(result.textContent);
+ speech.lang=to.value;
+ speechSynthesis.speak(speech);
+};
+
+document.getElementById("mic").onclick=()=>{
+ const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!Recognition){
+  message.textContent="Voice input is not supported in this browser.";
+  return;
+ }
+ const recognition=new Recognition();
+ recognition.lang=from.value==="hi"?"hi-IN":from.value;
+ recognition.onresult=(event)=>{
+  input.value=event.results[0][0].transcript;
+  input.dispatchEvent(new Event("input"));
+ };
+ recognition.onerror=()=>{
+  message.textContent="Microphone error. Check permission and try again.";
+ };
+ recognition.start();
+};
+</script>
+</body>
+</html>
