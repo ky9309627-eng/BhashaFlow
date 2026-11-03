@@ -167,6 +167,7 @@ button{cursor:pointer}
   <span id="badge" class="status">Waiting</span>
  </div>
  <div id="result" class="output-text">Your translation will appear here...</div>
+ <button onclick="addFavorite()">⭐ Add to Favorites</button>
  <div class="tools">
   <div>
    <button class="tool" id="speak">🔊</button>
@@ -181,7 +182,7 @@ button{cursor:pointer}
 
 <div class="bottom">
  <button onclick="showHistory()">History</button>
- <button onclick="alert('Favorites feature coming soon!')">Favorites</button>
+ <button onclick="showFavorites()">Favorites ⭐</button>
  <button onclick="alert('Settings coming soon!')">Settings</button>
 </div>
 
@@ -315,6 +316,35 @@ document.getElementById("mic").onclick=()=>{
     ).join("\n");
 
     alert(message);
+}
+ function addFavorite() {
+    let text = result.textContent;
+
+    if (!text || text === "Your translation will appear here...") {
+        alert("First translate something!");
+        return;
+    }
+
+    let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+    favorites.push(text);
+
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+
+    alert("Added to Favorites!");
+}
+
+function showFavorites() {
+    let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+    if (favorites.length === 0) {
+        alert("No favorites found!");
+        return;
+    }
+
+    alert(favorites.map((item, index) =>
+        (index + 1) + ". " + item
+    ).join("\n"));
 }
 </script>
 </body>
