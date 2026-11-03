@@ -180,7 +180,7 @@ button{cursor:pointer}
 <div id="message"></div>
 
 <div class="bottom">
- <button onclick="alert('History feature coming soon!')">History</button>
+ <button onclick="showHistory()">History</button>
  <button onclick="alert('Favorites feature coming soon!')">Favorites</button>
  <button onclick="alert('Settings coming soon!')">Settings</button>
 </div>
@@ -226,6 +226,13 @@ async function translate(){
   if(input.value.trim()!==currentText) return;
   if(data.responseStatus!==200) throw new Error("Translation unavailable");
   result.textContent=data.responseData.translatedText;
+  let history = JSON.parse(localStorage.getItem("translationHistory")) || [];
+
+history.unshift(
+    input.value + " → " + data.responseData.translatedText
+);
+
+localStorage.setItem("translationHistory", JSON.stringify(history));
   badge.textContent="Translated";
  }catch(error){
   if(error.name==="AbortError") return;
@@ -295,6 +302,20 @@ document.getElementById("mic").onclick=()=>{
  };
  recognition.start();
 };
+ function showHistory() {
+    let history = JSON.parse(localStorage.getItem("translationHistory")) || [];
+
+    if (history.length === 0) {
+        alert("No translation history found!");
+        return;
+    }
+
+    let message = history.map((item, index) =>
+        (index + 1) + ". " + item
+    ).join("\n");
+
+    alert(message);
+}
 </script>
 </body>
 </html>
