@@ -308,12 +308,12 @@ async function translate(){
   return;
  }
 
- if(from.value===to.value){
+ if(from.value===to.value && from.value!=="hi"){
   result.textContent=text;
   badge.textContent="Same language";
   lastTranslated=text;
   return;
- }
+}
 
  if(controller) controller.abort();
 
@@ -332,7 +332,9 @@ async function translate(){
    "https://translate.googleapis.com/translate_a/single?"+
    new URLSearchParams({
     client:"gtx",
-    sl:currentFrom,
+    sl: currentFrom==="hi" && currentTo==="hi"
+ ? "auto"
+ : currentFrom,
     tl:currentTo,
     dt:"t",
     q:currentText
